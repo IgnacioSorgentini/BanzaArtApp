@@ -1,25 +1,31 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import ArtWorksList from './src/views/ArtWorksList';
+import ArtWorkDetails from './src/views/ArtWorkDetails';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="dark" />
+        <Stack.Navigator>
+          <Stack.Screen
+            name='Home'
+            component={ArtWorksList}
+            options={{ title: 'Listado de Obras de Arte' }}
+          />
+        </Stack.Navigator>
+      </SafeAreaView>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1B1C36',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  text: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  }
 });
