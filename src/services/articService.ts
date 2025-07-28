@@ -1,9 +1,9 @@
 import { API_BASE_URL, API_ARTWORKS_ENDPOINT, API_ARTWORK_DETAIL_ENDPOINT } from '../constants/api';
 import { ApiResponse, Artwork, ArtworkItemList } from '../types';
 
-export const getArtworksList = async (page: number = 1, limit: number = 20): Promise<ApiResponse<ArtworkItemList[]>> => {
+export const getArtworksList = async (page: number = 1): Promise<ApiResponse<ArtworkItemList[]>> => {
   try {
-    const response = await fetch(`${API_BASE_URL}${API_ARTWORKS_ENDPOINT}?page=${page}&limit=${limit}`);
+    const response = await fetch(`${API_BASE_URL}${API_ARTWORKS_ENDPOINT}?page=${page}&limit=${3}`);
     const data = await response.json();
     return data; // Aquí tendrás que ver la estructura real de la respuesta de la API
   } catch (error) {

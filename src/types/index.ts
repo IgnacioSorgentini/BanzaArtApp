@@ -56,3 +56,8 @@ export interface ArtworkThumbnail {
   alt_text: string;
 }
 
+export type RootStackParamList = {
+  ArtWorksList: undefined;
+  ArtWorkDetails: { id: number };
+};
+

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, Image, StyleSheet } from "react-native";
+import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "../types";
 import { getArtworkById } from "../services/articService";
 import { Artwork } from "../types";
 import { GET_ARTIC_IMAGE_URL } from "../constants/api";
@@ -12,10 +14,15 @@ const ArtWorkDetails: React.FC = () => {
     const [artWorkInformation, setArtWorkInformation] = useState<Artwork>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    type ArtWorkDetailsRouteProp = RouteProp<RootStackParamList, 'ArtWorkDetails'>;
+
+    const route = useRoute<ArtWorkDetailsRouteProp>();
+    const { id } = route.params;
+
     const fetchArtworkInformation = async () => {
         setIsLoading(true);
         try {
-            const response = await getArtworkById('161');
+            const response = await getArtworkById(id.toString());
             if (response && response.data) {
                 setArtWorkInformation(response.data);
             }
@@ -33,68 +40,70 @@ const ArtWorkDetails: React.FC = () => {
     }, []);
 
     return(
-        <View>
-            {isLoading ? (
-                <ActivityIndicator size="large" />
-            ) : (
-                artWorkInformation && (
-                    <View style={styles.container}>
-                        <View>
-                            <Text style={styles.title}>
-                                {artWorkInformation?.title}
-                            </Text>
+        <ScrollView>
+            <View>
+                {isLoading ? (
+                    <ActivityIndicator size="large" />
+                ) : (
+                    artWorkInformation && (
+                        <View style={styles.container}>
+                            <View>
+                                <Text style={styles.title}>
+                                    {artWorkInformation?.title}
+                                </Text>
+                            </View>
+                            <View style={styles.divider} />
+                            <View>
+                                <Text>
+                                    Artist: {artWorkInformation.artist_title}
+                                </Text>
+                                <Text>
+                                    Place of origin: {artWorkInformation.place_of_origin}
+                                </Text>
+                            </View>
+                            <View style={styles.imageContainer}>
+                                <Image 
+                                    source={{ uri:GET_ARTIC_IMAGE_URL(artWorkInformation.image_id) }}
+                                    style={{ width: '100%', height: 300, resizeMode: 'contain', borderRadius: 20 }}
+                                />
+                            </View>
+                            <View>
+                                <Text style={styles.subtitle}>
+                                    Description
+                                </Text>
+                            </View>
+                            <View style={styles.divider} />
+                            <View>
+                                <Text style={styles.text}>
+                                    {(artWorkInformation.description || '').replace(/<[^>]+>/g, '')}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={styles.subtitle}>
+                                    Characteristics
+                                </Text>
+                            </View>
+                            <View style={styles.divider} />
+                            <View>
+                                <Text style={styles.text}>
+                                    Tehnique: {artWorkInformation.medium_display}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={styles.text}>
+                                    Materials: {artWorkInformation.material_titles}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={styles.text}>
+                                    Dimensions: {artWorkInformation.dimensions}
+                                </Text>
+                            </View>
                         </View>
-                        <View style={styles.divider} />
-                        <View>
-                            <Text>
-                                Artist: {artWorkInformation.artist_title}
-                            </Text>
-                            <Text>
-                                Place of origin: {artWorkInformation.place_of_origin}
-                            </Text>
-                        </View>
-                        <View style={styles.imageContainer}>
-                            <Image 
-                                source={{ uri:GET_ARTIC_IMAGE_URL(artWorkInformation.image_id) }}
-                                style={{ width: '100%', height: 300, resizeMode: 'contain', borderRadius: 20 }}
-                            />
-                        </View>
-                        <View>
-                            <Text style={styles.subtitle}>
-                                Description
-                            </Text>
-                        </View>
-                        <View style={styles.divider} />
-                        <View>
-                            <Text style={styles.text}>
-                                {artWorkInformation.description.replace(/<[^>]+>/g, '')}
-                            </Text>
-                        </View>
-                        <View>
-                            <Text style={styles.subtitle}>
-                                Characteristics
-                            </Text>
-                        </View>
-                        <View style={styles.divider} />
-                        <View>
-                            <Text style={styles.text}>
-                                Tehnique: {artWorkInformation.medium_display}
-                            </Text>
-                        </View>
-                        <View>
-                            <Text style={styles.text}>
-                                Materials: {artWorkInformation.material_titles}
-                            </Text>
-                        </View>
-                        <View>
-                            <Text style={styles.text}>
-                                Dimensions: {artWorkInformation.dimensions}
-                            </Text>
-                        </View>
-                    </View>
-                )
-            )}
-        </View>
+                    )
+                )}
+            </View>
+        </ScrollView>
     );
 };
 

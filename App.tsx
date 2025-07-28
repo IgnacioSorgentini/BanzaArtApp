@@ -2,10 +2,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { RootStackParamList } from './src/types';
 import ArtWorksList from './src/views/ArtWorksList';
 import ArtWorkDetails from './src/views/ArtWorkDetails';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
@@ -14,9 +15,14 @@ export default function App() {
         <StatusBar style="dark" />
         <Stack.Navigator>
           <Stack.Screen
-            name='Home'
+            name='ArtWorksList'
             component={ArtWorksList}
             options={{ title: 'Listado de Obras de Arte' }}
+          />
+          <Stack.Screen
+            name='ArtWorkDetails'
+            component={ArtWorkDetails}
+            options={{ title: 'Detalle de Obra' }}
           />
         </Stack.Navigator>
       </SafeAreaView>
