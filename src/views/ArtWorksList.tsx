@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import { getArtworksList } from "../services/articService";
 import { ArtworkItemList, RootStackParamList } from "../types";
 import ArtWorkItem from "../components/ArtWorkItem";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { isArtworkFavorite, addFavoriteArtwork, getFavoriteArtworks, removeFavoriteArtwork } from "../services/favoritesService";
 
 const ArtWorksList: React.FC = () => {
     const [artWorks, setArtWorks] = useState<ArtworkItemList[]>([]);
@@ -13,6 +14,7 @@ const ArtWorksList: React.FC = () => {
     const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [hasMore, setHasMore] = useState<boolean>(true);
+    const [favoriteIds, setFavoriteIds] = useState<Set<number>>(new Set());
 
     type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ArtWorksList'>;
     const navigation = useNavigation<HomeScreenNavigationProp>();
@@ -22,6 +24,13 @@ const ArtWorksList: React.FC = () => {
         const newItems = next.filter(item => !existingIds.has(item.id));
         return [...prev, ...newItems];
     };
+
+    const loadFavorites = useCallback(async () => {
+        const favorites = await getFavoriteArtworks();
+        const ids = new Set(favorites.map(item => item.id));
+        setFavoriteIds(ids);
+    }, []);
+    
 
     const fetchArtWorks = async (pageNumber: number) => {
         if (pageNumber === 1) {
@@ -59,11 +68,33 @@ const ArtWorksList: React.FC = () => {
           setPage(nextPage);
         }
     };
+
+    const handleToggleFavorite = async (artwork: ArtworkItemList) => {
+        const isCurrentlyFavorite = favoriteIds.has(artwork.id);
+        let updatedFavorites: Set<number>;
+    
+        if (isCurrentlyFavorite) {
+          await removeFavoriteArtwork(artwork.id);
+          updatedFavorites = new Set(favoriteIds);
+          updatedFavorites.delete(artwork.id);
+        } else {
+          await addFavoriteArtwork(artwork);
+          updatedFavorites = new Set(favoriteIds);
+          updatedFavorites.add(artwork.id);
+        }
+        setFavoriteIds(updatedFavorites);
+    };
     
 
     useEffect(() => {
         fetchArtWorks(1);
     }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+          loadFavorites();
+        }, [loadFavorites])
+    );
     
     return (
         <View>
@@ -75,7 +106,7 @@ const ArtWorksList: React.FC = () => {
                     data={artWorks} 
                     renderItem={({ item }) => (
                         <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
-                            <ArtWorkItem item={item} />
+                            <ArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
                         </TouchableOpacity>
                     )}
                     keyExtractor={(item) => item.id.toString()}

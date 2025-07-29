@@ -59,5 +59,6 @@ export interface ArtworkThumbnail {
 export type RootStackParamList = {
   ArtWorksList: undefined;
   ArtWorkDetails: { id: number };
+  FavoriteArtWorks: undefined,
 };
 

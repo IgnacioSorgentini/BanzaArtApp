@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ArtworkItemList } from "../types";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ImageBackground } from "react-native";
@@ -8,15 +8,21 @@ import { GET_ARTIC_IMAGE_URL } from "../constants/api";
 
 interface ArtWorkItemProps {
     item: ArtworkItemList;
+    onToggleFavorite: (artwork: ArtworkItemList) => void;
+    isFavorite: boolean;
 }
 
-const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item }) => {
+const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFavorite }) => {
     const [loaded, setLoaded] = useState(false);
 
     const imageSource =
         !item.image_id || !loaded
             ? { uri: item.thumbnail?.lqip }
             : { uri: GET_ARTIC_IMAGE_URL(item.image_id) };
+
+    const handleToggleFavorite = async () => {
+        onToggleFavorite(item); // Notifica al componente padre
+    };
 
     return (
         <ImageBackground 
@@ -26,7 +32,9 @@ const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item }) => {
             onLoadEnd={() => setLoaded(true)}
         >
             <View style={styles.favouriteIconContainer}>
-                <Text><Ionicons name="heart" size={20} color='white' /></Text>
+                <TouchableOpacity onPress={handleToggleFavorite}>
+                    <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={20} color='white' />
+                </TouchableOpacity>
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.artWorkTitle}>{item.title}</Text>
