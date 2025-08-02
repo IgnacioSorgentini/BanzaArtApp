@@ -16,10 +16,10 @@ const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFav
     const [loaded, setLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
 
-    const placeholderImage = require('../../assets/image-placeholder.svg');
     const imageUrl = GET_ARTIC_IMAGE_URL(item.image_id);
 
-    const imageSource = imageError ? placeholderImage : { uri: imageUrl };
+   const imageSource =
+    imageError ? { uri: item.thumbnail?.lqip } : { uri: imageUrl };
 
     const handleToggleFavorite = async () => {
         onToggleFavorite(item); // Notifica al componente padre
@@ -48,6 +48,7 @@ const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFav
 const styles = StyleSheet.create({
     container: {
         height: 200,
+        width: '100%',
         borderRadius: 10,
         padding: 20,
         marginBottom: 20,
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         position: 'absolute',
+        maxWidth: '90%',
         bottom: 0,
         left: 0,
         padding: 10,

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, FlatList, StyleSheet } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, StyleSheet, useWindowDimensions } from "react-native";
 import { getArtworksList } from "../services/articService";
 import { ArtworkItemList, RootStackParamList } from "../types";
 import ArtWorkItem from "../components/ArtWorkItem";
@@ -20,6 +20,9 @@ const ArtWorksList: React.FC = () => {
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
     const MemoArtWorkItem = memo(ArtWorkItem);
+
+    const { width } = useWindowDimensions();
+    const numColumns = width > 600 ? 2 : 1;
 
     const mergeUniqueArtworks = (prev: ArtworkItemList[], next: ArtworkItemList[]) => {
         const existingIds = new Set(prev.map(item => item.id));
@@ -106,26 +109,36 @@ const ArtWorksList: React.FC = () => {
     
     return (
         <View style={styles.listContainer}>
-            <FlatList 
-                style={styles.list}
-                data={artWorks.filter(item => item.image_id !== null)} 
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
-                        <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
-                    </TouchableOpacity>
-                )}
-                ListEmptyComponent={
-                    isLoading 
-                        ? <ActivityIndicator size="large" /> 
-                        : <Text>No se encontraron obras de arte.</Text>
-                }
-                keyExtractor={(item) => item.id.toString()}
-                ListFooterComponent={
-                    isLoadingMore ? <ActivityIndicator size="small" /> : null
-                }
-                onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.2}
-            />
+            {isLoading ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#b50938" />
+                </View>
+            ) : (
+                <FlatList 
+                    style={styles.list}
+                    numColumns={numColumns}
+                    key={numColumns}
+                    data={artWorks.filter(item => item.image_id !== null)} 
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={numColumns > 1 ? styles.itemContainer : undefined} onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
+                            <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
+                        </TouchableOpacity>
+                    )}
+                    ListEmptyComponent={
+                        <Text>No se encontraron obras de arte.</Text>
+                    }
+                    keyExtractor={(item) => item.id.toString()}
+                    ListFooterComponent={
+                        isLoadingMore ? (
+                            <View style={styles.loaderContainer}>
+                                <ActivityIndicator size="small" color="#b50938" />
+                            </View>
+                        ) : null
+                    }
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={0.2}
+                />
+            )}
         </View>
     );
 };
@@ -137,7 +150,18 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
-    }
+    },
+    itemContainer: {
+        flex: 0.50,
+        margin: 4,
+    },
+    loaderContainer: {
+        backgroundColor: '#FFF9C4',
+        flex: 1,
+        minHeight: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })
 
 export default ArtWorksList;

@@ -1,6 +1,6 @@
 // src/views/FavoriteArtWorks.tsx
 import React, { useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ArtworkItemList, RootStackParamList } from '../types';
@@ -14,6 +14,9 @@ const FavoriteArtWorks: React.FC = () => {
 
   type FavoriteScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'FavoriteArtWorks'>;
   const navigation = useNavigation<FavoriteScreenNavigationProp>();
+
+  const { width } = useWindowDimensions();
+  const numColumns = width > 600 ? 2 : 1;
 
   const loadFavorites = useCallback(async () => {
     setIsLoading(true);
@@ -67,8 +70,10 @@ const FavoriteArtWorks: React.FC = () => {
     <View style={styles.container}>
       <FlatList
         data={favorites}
+        numColumns={numColumns}
+        key={numColumns}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
+          <TouchableOpacity style={numColumns > 1 ? styles.itemContainer : undefined} onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
             <ArtWorkItem
               item={item}
               onToggleFavorite={handleToggleFavorite}
@@ -93,17 +98,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFF9C4',
   },
   emptyText: {
     fontSize: 18,
-    color: '#666',
+    color: '#b50938',
     textAlign: 'center',
     padding: 20,
   },
   listContent: {
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  itemContainer: {
+        flex: 0.50,
+        margin: 4,
   },
 });
 

@@ -25,9 +25,10 @@ export default function App() {
                 title: 'Listado de Obras de Arte',
                 headerRight: () => (
                   <TouchableOpacity
+                  style={{ marginRight: 16 }}
                     onPress={() => navigation.navigate('FavoriteArtWorks')}
                   >
-                    <Ionicons name="heart" size={24} color="blue" />
+                    <Ionicons name="heart" size={24} color="#fff" />
                   </TouchableOpacity>
                 ),
                 headerStyle: {
