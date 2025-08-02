@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { getArtworkById } from "../services/articService";
 import { Artwork } from "../types";
 import { GET_ARTIC_IMAGE_URL } from "../constants/api";
-
+import { addFavoriteArtwork, isArtworkFavorite, removeFavoriteArtwork } from "../services/favoritesService";
+import Ionicons from '@expo/vector-icons/Ionicons';
 interface ArtWorkDetailsProps {
     artWorkId: string;
 };
@@ -13,6 +14,7 @@ interface ArtWorkDetailsProps {
 const ArtWorkDetails: React.FC = () => {
     const [artWorkInformation, setArtWorkInformation] = useState<Artwork>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
     type ArtWorkDetailsRouteProp = RouteProp<RootStackParamList, 'ArtWorkDetails'>;
 
@@ -35,9 +37,33 @@ const ArtWorkDetails: React.FC = () => {
         }
     };
 
+    const checkIsFavorite = async () => {
+        const isFav = await isArtworkFavorite(id);
+        setIsFavorite(isFav);
+    };
+
+    const handleToggleFavorite = async () => {
+        if (!artWorkInformation) return;
+
+        const artWorkItem = {
+            id: artWorkInformation.id,
+            title: artWorkInformation.title,
+            artist_title: artWorkInformation.artist_title,
+            image_id: artWorkInformation.image_id,
+        };
+
+        if (isFavorite) {
+            await removeFavoriteArtwork(id);
+        } else {
+            await addFavoriteArtwork(artWorkItem);
+        }
+        setIsFavorite(!isFavorite);
+    };
+
     useEffect(() => {
         fetchArtworkInformation();
-    }, []);
+        checkIsFavorite();
+    }, [id]);
 
     return(
         <ScrollView>
@@ -47,10 +73,13 @@ const ArtWorkDetails: React.FC = () => {
                 ) : (
                     artWorkInformation && (
                         <View style={styles.container}>
-                            <View>
+                            <View style={styles.titleContainer}>
                                 <Text style={styles.title}>
-                                    {artWorkInformation?.title}
+                                    {artWorkInformation?.title.split("(")[0].trim()}
                                 </Text>
+                                <TouchableOpacity onPress={handleToggleFavorite}>
+                                    <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={25} style={styles.heartButton} />
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.divider} />
                             <View style={styles.detailsContainer}>
@@ -126,6 +155,11 @@ const styles = StyleSheet.create({
     subtitleContainer: {
         marginTop: 20,
     },
+    titleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
     title: {
         color: '#b50938',
         fontSize: 30,
@@ -162,6 +196,9 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#b50938',
         marginVertical: 10,
+    },
+    heartButton: {
+        color: '#b50938',
     },
 })
 

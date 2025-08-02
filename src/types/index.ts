@@ -24,16 +24,8 @@ export type ArtworkDimension = {
 export interface ArtworkItemList {
   id: number;
   title: string;
-  artist_display: string;
   image_id: string;
   thumbnail?: ArtworkThumbnail;
-  date_display?: string;
-  place_of_origin?: string;
-  medium_display?: string;
-  dimensions?: string;
-  credit_line?: string;
-  publication_history?: string;
-  exhibition_history?: string;
 }
 
 export interface Artwork {
