@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, FlatList, StyleSheet, useWindowDimensions } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, StyleSheet, useWindowDimensions, ListRenderItemInfo } from "react-native";
 import { getArtworksList } from "../services/articService";
 import { ArtworkItemList, RootStackParamList } from "../types";
 import ArtWorkItem from "../components/ArtWorkItem";
@@ -95,6 +95,14 @@ const ArtWorksList: React.FC = () => {
         }
         setFavoriteIds(updatedFavorites);
     }, [favoriteIds]);
+
+    const renderArtworkItem = useCallback(({ item }: ListRenderItemInfo<ArtworkItemList>) => {
+    return (
+        <TouchableOpacity style={numColumns > 1 ? styles.itemContainer : undefined} onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
+            <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
+        </TouchableOpacity>
+    );
+}, [navigation, numColumns, handleToggleFavorite, favoriteIds]); // Dependencias importantes
     
 
     useEffect(() => {
@@ -119,11 +127,7 @@ const ArtWorksList: React.FC = () => {
                     numColumns={numColumns}
                     key={numColumns}
                     data={artWorks.filter(item => item.image_id !== null)} 
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={numColumns > 1 ? styles.itemContainer : undefined} onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
-                            <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
-                        </TouchableOpacity>
-                    )}
+                    renderItem={renderArtworkItem}
                     ListEmptyComponent={
                         <Text>No se encontraron obras de arte.</Text>
                     }
