@@ -31,9 +31,9 @@ export default function App() {
                   </TouchableOpacity>
                 ),
                 headerStyle: {
-                  backgroundColor: '#b50938', // Color de fondo del encabezado
+                  backgroundColor: '#b50938',
                 },
-                headerTintColor: '#fff', // Color del texto del encabezado
+                headerTintColor: '#fff',
                 headerTitleStyle: {
                   fontWeight: 'bold',
                 },

@@ -63,15 +63,21 @@ const ArtWorksList: React.FC = () => {
         }
     };
 
-    const handleLoadMore = async () => {
-        if (!isLoadingMore && hasMore) {
-          const nextPage = page + 1;
-          await fetchArtWorks(nextPage);
-          setPage(nextPage);
+    const handleLoadMore = useCallback(async () => {
+        // Si la lista aún no tiene elementos, la carga inicial ya se está manejando.
+        // Evitamos el bucle infinito que se dispara al principio.
+        if (artWorks.length === 0) {
+        return;
         }
-    };
 
-    const handleToggleFavorite = async (artwork: ArtworkItemList) => {
+        if (!isLoadingMore && hasMore) {
+        const nextPage = page + 1;
+        await fetchArtWorks(nextPage);
+        setPage(nextPage);
+        }
+    }, [isLoadingMore, hasMore, page, artWorks.length, fetchArtWorks]);
+
+    const handleToggleFavorite = useCallback(async (artwork: ArtworkItemList) => {
         const isCurrentlyFavorite = favoriteIds.has(artwork.id);
         let updatedFavorites: Set<number>;
     
@@ -85,7 +91,7 @@ const ArtWorksList: React.FC = () => {
           updatedFavorites.add(artwork.id);
         }
         setFavoriteIds(updatedFavorites);
-    };
+    }, [favoriteIds]);
     
 
     useEffect(() => {
@@ -99,29 +105,27 @@ const ArtWorksList: React.FC = () => {
     );
     
     return (
-        <View>
-            {isLoading ? (
-                <ActivityIndicator size="large" />
-            ) : (
-                <FlatList 
-                    style={styles.list}
-                    data={artWorks} 
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
-                            <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.5}
-                    ListFooterComponent={
-                        isLoadingMore ? <ActivityIndicator size="small" /> : null
-                    }
-                    windowSize={10}
-                    initialNumToRender={10}
-                    removeClippedSubviews={true}
-                />
-            )}
+        <View style={styles.listContainer}>
+            <FlatList 
+                style={styles.list}
+                data={artWorks} 
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
+                        <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
+                    </TouchableOpacity>
+                )}
+                ListEmptyComponent={
+                    isLoading 
+                        ? <ActivityIndicator size="large" /> 
+                        : <Text>No se encontraron obras de arte.</Text>
+                }
+                keyExtractor={(item) => item.id.toString()}
+                ListFooterComponent={
+                    isLoadingMore ? <ActivityIndicator size="small" /> : null
+                }
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.2}
+            />
         </View>
     );
 };
@@ -130,6 +134,9 @@ const styles = StyleSheet.create({
     list: {
         padding: 20,
         backgroundColor: '#FFF9C4',
+    },
+    listContainer: {
+        flex: 1,
     }
 })
 
