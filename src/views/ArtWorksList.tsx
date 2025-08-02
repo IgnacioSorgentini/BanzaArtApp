@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import { getArtworksList } from "../services/articService";
 import { ArtworkItemList, RootStackParamList } from "../types";
@@ -18,6 +18,8 @@ const ArtWorksList: React.FC = () => {
 
     type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ArtWorksList'>;
     const navigation = useNavigation<HomeScreenNavigationProp>();
+
+    const MemoArtWorkItem = memo(ArtWorkItem);
 
     const mergeUniqueArtworks = (prev: ArtworkItemList[], next: ArtworkItemList[]) => {
         const existingIds = new Set(prev.map(item => item.id));
@@ -106,7 +108,7 @@ const ArtWorksList: React.FC = () => {
                     data={artWorks} 
                     renderItem={({ item }) => (
                         <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
-                            <ArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
+                            <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
                         </TouchableOpacity>
                     )}
                     keyExtractor={(item) => item.id.toString()}
@@ -115,6 +117,9 @@ const ArtWorksList: React.FC = () => {
                     ListFooterComponent={
                         isLoadingMore ? <ActivityIndicator size="small" /> : null
                     }
+                    windowSize={10}
+                    initialNumToRender={10}
+                    removeClippedSubviews={true}
                 />
             )}
         </View>
@@ -124,6 +129,7 @@ const ArtWorksList: React.FC = () => {
 const styles = StyleSheet.create({
     list: {
         padding: 20,
+        backgroundColor: '#FFF9C4',
     }
 })
 

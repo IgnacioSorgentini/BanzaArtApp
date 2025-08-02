@@ -14,11 +14,17 @@ interface ArtWorkItemProps {
 
 const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFavorite }) => {
     const [loaded, setLoaded] = useState(false);
+    const [imageError, setImageError] = useState(false);
+
+    const placeholderImage = require('../../assets/image-placeholder.svg');
+    const imageUrl = item.image_id ? GET_ARTIC_IMAGE_URL(item.image_id) : item.thumbnail?.lqip;
 
     const imageSource =
-        !item.image_id || !loaded
-            ? { uri: item.thumbnail?.lqip }
-            : { uri: GET_ARTIC_IMAGE_URL(item.image_id) };
+    imageError || !item.image_id
+        ? item.thumbnail?.lqip
+            ? { uri: item.thumbnail.lqip }
+            : placeholderImage
+        : { uri: imageUrl };
 
     const handleToggleFavorite = async () => {
         onToggleFavorite(item); // Notifica al componente padre
@@ -30,15 +36,15 @@ const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFav
             imageStyle={{ borderRadius: 10 }}
             style={styles.container}
             onLoadEnd={() => setLoaded(true)}
+            onError={() => setImageError(true)}
         >
-            <View style={styles.favouriteIconContainer}>
+            <View style={styles.favoriteIconContainer}>
                 <TouchableOpacity onPress={handleToggleFavorite}>
-                    <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={20} color='white' />
+                    <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={25} style={styles.heartButton} />
                 </TouchableOpacity>
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.artWorkTitle}>{item.title}</Text>
-                <Text style={styles.artWorkTitle}>{item.image_id ?? 'no hay'}</Text>
             </View>
         </ImageBackground>
     );
@@ -63,7 +69,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 0,
     },
-    favouriteIconContainer: {
+    favoriteIconContainer: {
         position: 'absolute',
         top: 0,
         right: 0,
@@ -72,6 +78,9 @@ const styles = StyleSheet.create({
     artWorkTitle: {
         color: '#ffffff',
         fontSize: 12
+    },
+    heartButton: {
+        color: '#b50938',
     },
 })
 

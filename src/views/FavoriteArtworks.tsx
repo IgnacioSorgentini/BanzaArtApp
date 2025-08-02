@@ -86,7 +86,8 @@ const FavoriteArtWorks: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFF9C4',
+    padding: 20,
   },
   centered: {
     flex: 1,

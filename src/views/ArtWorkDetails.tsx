@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView, Dimensions } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { getArtworkById } from "../services/articService";
@@ -64,7 +64,7 @@ const ArtWorkDetails: React.FC = () => {
                             <View style={styles.imageContainer}>
                                 <Image 
                                     source={{ uri:GET_ARTIC_IMAGE_URL(artWorkInformation.image_id) }}
-                                    style={{ width: '100%', height: 300, resizeMode: 'contain', borderRadius: 20 }}
+                                    style={{ width: '100%', height: 300, resizeMode: 'cover', borderRadius: 20 }}
                                 />
                             </View>
                             <View>
@@ -109,9 +109,9 @@ const ArtWorkDetails: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#b50938',
+        minHeight: Dimensions.get('window').height,
+        backgroundColor: '#FFF9C4',
         flexDirection: 'column',
-        justifyContent: 'center',
         alignContent: 'center',
         padding: 20,
     },
@@ -120,23 +120,23 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     title: {
-        color: '#ffffff',
+        color: '#b50938',
         fontSize: 30,
         fontWeight: 'bold',
     },
     subtitle: {
-        color: '#ffffff',
+        color: '#b50938',
         fontSize: 25,
         fontWeight: 'bold',
     },
     text: {
-        color: '#ffffff',
+        color: '#b50938',
         fontSize: 14,
     },
     divider: {
         height: 1,
         width: '100%',
-        backgroundColor: '#ccc',
+        backgroundColor: '#b50938',
         marginVertical: 10,
       },
 })
