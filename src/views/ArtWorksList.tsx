@@ -108,7 +108,7 @@ const ArtWorksList: React.FC = () => {
         <View style={styles.listContainer}>
             <FlatList 
                 style={styles.list}
-                data={artWorks} 
+                data={artWorks.filter(item => item.image_id !== null)} 
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
                         <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />

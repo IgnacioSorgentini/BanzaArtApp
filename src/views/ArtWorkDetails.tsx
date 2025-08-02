@@ -53,11 +53,11 @@ const ArtWorkDetails: React.FC = () => {
                                 </Text>
                             </View>
                             <View style={styles.divider} />
-                            <View>
-                                <Text>
+                            <View style={styles.detailsContainer}>
+                                <Text style={styles.detail}>
                                     Artist: {artWorkInformation.artist_title}
                                 </Text>
-                                <Text>
+                                <Text style={styles.detail}>
                                     Place of origin: {artWorkInformation.place_of_origin}
                                 </Text>
                             </View>
@@ -67,36 +67,40 @@ const ArtWorkDetails: React.FC = () => {
                                     style={{ width: '100%', height: 300, resizeMode: 'cover', borderRadius: 20 }}
                                 />
                             </View>
-                            <View>
-                                <Text style={styles.subtitle}>
-                                    Description
-                                </Text>
-                            </View>
-                            <View style={styles.divider} />
-                            <View>
-                                <Text style={styles.text}>
-                                    {(artWorkInformation.description || '').replace(/<[^>]+>/g, '')}
-                                </Text>
-                            </View>
-                            <View>
+                            {artWorkInformation.description && (
+                               <View>
+                                    <View style={styles.subtitleContainer}>
+                                        <Text style={styles.subtitle}>
+                                            Description
+                                        </Text>
+                                    </View>
+                                    <View style={styles.divider} />
+                                    <View>
+                                        <Text style={styles.text}>
+                                                {(artWorkInformation.description || '').replace(/<[^>]+>/g, '')}
+                                        </Text>
+                                    </View>
+                               </View>
+                            )}
+                            <View style={styles.subtitleContainer}>
                                 <Text style={styles.subtitle}>
                                     Characteristics
                                 </Text>
                             </View>
                             <View style={styles.divider} />
-                            <View>
+                            <View style={styles.characteristicContainer}>
                                 <Text style={styles.text}>
-                                    Tehnique: {artWorkInformation.medium_display}
+                                    <span style={styles.characteristicTitle}>Tehnique:</span> {artWorkInformation.medium_display ?? '-'}
                                 </Text>
                             </View>
-                            <View>
+                            <View style={styles.characteristicContainer}>
                                 <Text style={styles.text}>
-                                    Materials: {artWorkInformation.material_titles}
+                                    <span style={styles.characteristicTitle}>Materials:</span> {artWorkInformation.material_titles ?? '-'}
                                 </Text>
                             </View>
-                            <View>
+                            <View style={styles.characteristicContainer}>
                                 <Text style={styles.text}>
-                                    Dimensions: {artWorkInformation.dimensions}
+                                    <span style={styles.characteristicTitle}>Dimensions:</span> {artWorkInformation.dimensions ?? '-'}
                                 </Text>
                             </View>
                         </View>
@@ -119,6 +123,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         width: '100%',
     },
+    subtitleContainer: {
+        marginTop: 20,
+    },
     title: {
         color: '#b50938',
         fontSize: 30,
@@ -127,6 +134,23 @@ const styles = StyleSheet.create({
     subtitle: {
         color: '#b50938',
         fontSize: 25,
+        fontWeight: 'bold',
+    },
+    detailsContainer: {
+        flexDirection: 'row',
+        marginBottom: 10,
+    },
+    detail: {
+        marginRight: 16,
+        backgroundColor: '#b50938',
+        borderRadius: 10,
+        padding: 8,
+        color: '#FFF',
+    },
+    characteristicContainer: {
+        marginBottom: 10,
+    },
+    characteristicTitle: {
         fontWeight: 'bold',
     },
     text: {
@@ -138,7 +162,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#b50938',
         marginVertical: 10,
-      },
+    },
 })
 
 export default ArtWorkDetails;
