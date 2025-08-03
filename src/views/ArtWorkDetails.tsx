@@ -79,21 +79,29 @@ const ArtWorkDetails: React.FC = () => {
                     artWorkInformation && (
                         <View style={styles.container}>
                             <View style={styles.titleContainer}>
-                                <Text style={styles.title}>
-                                    {artWorkInformation?.title.split("(")[0].trim()}
-                                </Text>
-                                <TouchableOpacity onPress={handleToggleFavorite}>
-                                    <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={25} style={styles.heartButton} />
-                                </TouchableOpacity>
+                                <View style={{ maxWidth: '80%' }}>
+                                    <Text style={styles.title}>
+                                        {artWorkInformation?.title.split(/[.,(]/)[0].trim()}
+                                    </Text>
+                                </View>
+                                <View>
+                                    <TouchableOpacity onPress={handleToggleFavorite}>
+                                        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={30} style={styles.heartButton} />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                             <View style={styles.divider} />
                             <View style={styles.detailsContainer}>
-                                <Text style={styles.detail}>
-                                    Artist: {artWorkInformation.artist_title}
-                                </Text>
-                                <Text style={styles.detail}>
-                                    Place of origin: {artWorkInformation.place_of_origin}
-                                </Text>
+                                <View style={styles.detail}>
+                                    <Text style={styles.textDetail}>
+                                        Artist: {artWorkInformation.artist_title}
+                                    </Text>
+                                </View>
+                                <View style={styles.detail}>
+                                    <Text style={styles.textDetail}>
+                                        Place of origin: {artWorkInformation.place_of_origin}
+                                    </Text>
+                                </View>
                             </View>
                             <View style={styles.imageContainer}>
                                 {artWorkInformation.thumbnail?.lqip && (
@@ -125,27 +133,37 @@ const ArtWorkDetails: React.FC = () => {
                                     </View>
                                </View>
                             )}
-                            <View style={styles.subtitleContainer}>
-                                <Text style={styles.subtitle}>
-                                    Characteristics
-                                </Text>
-                            </View>
-                            <View style={styles.divider} />
-                            <View style={styles.characteristicContainer}>
-                                <Text style={styles.text}>
-                                    <span style={styles.characteristicTitle}>Tehnique:</span> {artWorkInformation.medium_display ?? '-'}
-                                </Text>
-                            </View>
-                            <View style={styles.characteristicContainer}>
-                                <Text style={styles.text}>
-                                    <span style={styles.characteristicTitle}>Materials:</span> {artWorkInformation.material_titles ?? '-'}
-                                </Text>
-                            </View>
-                            <View style={styles.characteristicContainer}>
-                                <Text style={styles.text}>
-                                    <span style={styles.characteristicTitle}>Dimensions:</span> {artWorkInformation.dimensions ?? '-'}
-                                </Text>
-                            </View>
+                            {(artWorkInformation.material_titles || artWorkInformation.medium_display || artWorkInformation.dimensions) && (
+                                <>
+                                    <View style={styles.subtitleContainer}>
+                                        <Text style={styles.subtitle}>
+                                            Characteristics
+                                        </Text>
+                                    </View>
+                                    <View style={styles.divider} />
+                                    {artWorkInformation.medium_display && (
+                                        <View style={styles.characteristicContainer}>
+                                            <Text style={styles.text}>
+                                                Tehnique: {artWorkInformation.medium_display}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    {artWorkInformation.material_titles.length > 0 && (
+                                        <View style={styles.characteristicContainer}>
+                                            <Text style={styles.text}>
+                                                Materials: {artWorkInformation.material_titles.join(', ')}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    {artWorkInformation.dimensions && (
+                                        <View style={styles.characteristicContainer}>
+                                            <Text style={styles.text}>
+                                                Dimensions: {artWorkInformation.dimensions ?? '-'}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </>
+                            )}
                         </View>
                     )
                 )}
@@ -191,14 +209,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     detailsContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         marginBottom: 10,
     },
     detail: {
-        marginRight: 16,
+        marginBottom: 5,
         backgroundColor: '#b50938',
         borderRadius: 10,
         padding: 8,
+    },
+    textDetail: {
         color: '#FFF',
     },
     characteristicContainer: {
