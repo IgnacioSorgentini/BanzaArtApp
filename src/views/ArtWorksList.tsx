@@ -7,6 +7,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { isArtworkFavorite, addFavoriteArtwork, getFavoriteArtworks, removeFavoriteArtwork } from "../services/favoritesService";
+import { showToast } from "../utils/showToast";
 
 const ArtWorksList: React.FC = () => {
     const [artWorks, setArtWorks] = useState<ArtworkItemList[]>([]);
@@ -57,6 +58,7 @@ const ArtWorksList: React.FC = () => {
         }
         catch(err: any) {
             console.log(err);
+            showToast('error', { text1: 'Error cargando obras de arte' });
         }
         finally {
             setIsLoading(false);
@@ -86,9 +88,12 @@ const ArtWorksList: React.FC = () => {
             if (isCurrentlyFavorite) {
                 removeFavoriteArtwork(artwork.id);
                 updatedFavorites.delete(artwork.id);
+                showToast('info', {text1: 'Eliminado de favoritos'});
             } else {
                 addFavoriteArtwork(artwork);
                 updatedFavorites.add(artwork.id);
+                showToast('success', {text1: 'Añadido a favoritos'});
+
             }
             return updatedFavorites;
         });

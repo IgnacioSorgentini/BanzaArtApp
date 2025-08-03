@@ -7,6 +7,7 @@ import { Artwork } from "../types";
 import { GET_ARTIC_HIGH_IMAGE_URL } from "../constants/api";
 import { addFavoriteArtwork, isArtworkFavorite, removeFavoriteArtwork } from "../services/favoritesService";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { showToast } from "../utils/showToast";
 interface ArtWorkDetailsProps {
     artWorkId: string;
 };
@@ -32,6 +33,7 @@ const ArtWorkDetails: React.FC = () => {
         }
         catch(err: any) {
             console.log(err);
+            showToast('error', { text1: 'Error cargando información de la obra' });
         }
         finally {
             setIsLoading(false);
@@ -55,8 +57,10 @@ const ArtWorkDetails: React.FC = () => {
 
         if (isFavorite) {
             await removeFavoriteArtwork(id);
+            showToast('info', { text1: 'Eliminado de favoritos' });
         } else {
             await addFavoriteArtwork(artWorkItem);
+            showToast('success', { text1: 'Añadido a favoritos' });
         }
         setIsFavorite(!isFavorite);
     };

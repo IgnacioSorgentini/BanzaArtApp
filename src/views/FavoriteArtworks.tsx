@@ -7,6 +7,7 @@ import { ArtworkItemList, RootStackParamList } from '../types';
 import { getFavoriteArtworks, removeFavoriteArtwork, addFavoriteArtwork } from '../services/favoritesService';
 import ArtWorkItem from '../components/ArtWorkItem';
 import { TouchableOpacity } from 'react-native';
+import { showToast } from '../utils/showToast';
 
 const FavoriteArtWorks: React.FC = () => {
   const [favorites, setFavorites] = useState<ArtworkItemList[]>([]);
@@ -25,6 +26,7 @@ const FavoriteArtWorks: React.FC = () => {
       setFavorites(storedFavorites);
     } catch (error) {
       console.error("Error cargando favoritos en la vista de favoritos:", error);
+      showToast('error', { text1: 'Error cargando favoritos' });
       setFavorites([]);
     } finally {
       setIsLoading(false);
@@ -36,10 +38,12 @@ const FavoriteArtWorks: React.FC = () => {
     if (isCurrentlyFavorite) {
       const updatedFavorites = await removeFavoriteArtwork(artwork.id);
       setFavorites(updatedFavorites);
+      showToast('info', { text1: 'Eliminado de favoritos' });
     } else {
       // Aunque esta pantalla es de favoritos, permitimos añadir si por alguna razón se llega aquí un item no favorito
       const updatedFavorites = await addFavoriteArtwork(artwork);
       setFavorites(updatedFavorites);
+      showToast('success', { text1: 'Añadido a favoritos' });
     }
   };
 

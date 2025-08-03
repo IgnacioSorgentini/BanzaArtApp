@@ -8,6 +8,8 @@ import ArtWorksList from './src/views/ArtWorksList';
 import ArtWorkDetails from './src/views/ArtWorkDetails';
 import FavoriteArtWorks from './src/views/FavoriteArtworks';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './src/config/toastConfig';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -70,6 +72,7 @@ export default function App() {
             />
           </Stack.Navigator>
         </SafeAreaView>
+        <Toast config={toastConfig} />
       </NavigationContainer>
     </SafeAreaProvider>
   );
