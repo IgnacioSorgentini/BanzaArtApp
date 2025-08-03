@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ArtworkItemList } from "../types";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ArtWorkItem;
+export default memo(ArtWorkItem);

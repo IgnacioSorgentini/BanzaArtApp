@@ -19,8 +19,6 @@ const ArtWorksList: React.FC = () => {
     type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ArtWorksList'>;
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
-    const MemoArtWorkItem = memo(ArtWorkItem);
-
     const { width } = useWindowDimensions();
     const numColumns = width > 600 ? 2 : 1;
 
@@ -81,28 +79,28 @@ const ArtWorksList: React.FC = () => {
     }, [isLoadingMore, hasMore, page, artWorks.length, fetchArtWorks]);
 
     const handleToggleFavorite = useCallback(async (artwork: ArtworkItemList) => {
-        const isCurrentlyFavorite = favoriteIds.has(artwork.id);
-        let updatedFavorites: Set<number>;
+        setFavoriteIds(prevIds => {
+            const isCurrentlyFavorite = prevIds.has(artwork.id);
+            const updatedFavorites = new Set(prevIds);
     
-        if (isCurrentlyFavorite) {
-          await removeFavoriteArtwork(artwork.id);
-          updatedFavorites = new Set(favoriteIds);
-          updatedFavorites.delete(artwork.id);
-        } else {
-          await addFavoriteArtwork(artwork);
-          updatedFavorites = new Set(favoriteIds);
-          updatedFavorites.add(artwork.id);
-        }
-        setFavoriteIds(updatedFavorites);
-    }, [favoriteIds]);
+            if (isCurrentlyFavorite) {
+                removeFavoriteArtwork(artwork.id);
+                updatedFavorites.delete(artwork.id);
+            } else {
+                addFavoriteArtwork(artwork);
+                updatedFavorites.add(artwork.id);
+            }
+            return updatedFavorites;
+        });
+    }, []); // ¡Dependencias vacías! La función no cambia.
 
     const renderArtworkItem = useCallback(({ item }: ListRenderItemInfo<ArtworkItemList>) => {
-    return (
-        <TouchableOpacity style={numColumns > 1 ? styles.itemContainer : undefined} onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
-            <MemoArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
-        </TouchableOpacity>
-    );
-}, [navigation, numColumns, handleToggleFavorite, favoriteIds]); // Dependencias importantes
+        return (
+            <TouchableOpacity style={numColumns > 1 ? styles.itemContainer : undefined} onPress={() => navigation.navigate('ArtWorkDetails', { id: item.id })}>
+                <ArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
+            </TouchableOpacity>
+        );
+    }, [navigation, numColumns, handleToggleFavorite, favoriteIds]); // Dependencias importantes
     
 
     useEffect(() => {
@@ -141,6 +139,7 @@ const ArtWorksList: React.FC = () => {
                     }
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.2}
+                    extraData={favoriteIds} 
                 />
             )}
         </View>
