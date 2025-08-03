@@ -25,8 +25,8 @@ const FavoriteArtWorks: React.FC = () => {
       const storedFavorites = await getFavoriteArtworks();
       setFavorites(storedFavorites);
     } catch (error) {
-      console.error("Error cargando favoritos en la vista de favoritos:", error);
-      showToast('error', { text1: 'Error cargando favoritos' });
+      console.error("Error loading favorites in favorites view:", error);
+      showToast('error', { text1: 'Error loading favorites' });
       setFavorites([]);
     } finally {
       setIsLoading(false);
@@ -38,12 +38,12 @@ const FavoriteArtWorks: React.FC = () => {
     if (isCurrentlyFavorite) {
       const updatedFavorites = await removeFavoriteArtwork(artwork.id);
       setFavorites(updatedFavorites);
-      showToast('info', { text1: 'Eliminado de favoritos' });
+      showToast('info', { text1: 'Removed from favorites' });
     } else {
       // Aunque esta pantalla es de favoritos, permitimos añadir si por alguna razón se llega aquí un item no favorito
       const updatedFavorites = await addFavoriteArtwork(artwork);
       setFavorites(updatedFavorites);
-      showToast('success', { text1: 'Añadido a favoritos' });
+      showToast('success', { text1: 'Added to favorites' });
     }
   };
 
@@ -65,7 +65,7 @@ const FavoriteArtWorks: React.FC = () => {
   if (favorites.length === 0) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.emptyText}>No tienes obras de arte favoritas aún.</Text>
+        <Text style={styles.emptyText}>You don't have any favorite artworks yet.</Text>
       </View>
     );
   }
@@ -81,7 +81,7 @@ const FavoriteArtWorks: React.FC = () => {
             <ArtWorkItem
               item={item}
               onToggleFavorite={handleToggleFavorite}
-              isFavorite={true} // Siempre será true en la lista de favoritos
+              isFavorite={true}
             />
           </TouchableOpacity>
         )}
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     color: '#b50938',
     textAlign: 'center',
     padding: 20,
+    fontFamily: 'Inter-Regular',
   },
   listContent: {
     paddingHorizontal: 10,

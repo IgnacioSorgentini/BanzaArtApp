@@ -58,7 +58,7 @@ const ArtWorksList: React.FC = () => {
         }
         catch(err: any) {
             console.log(err);
-            showToast('error', { text1: 'Error cargando obras de arte' });
+            showToast('error', { text1: 'Error loading artworks' });
         }
         finally {
             setIsLoading(false);
@@ -88,16 +88,16 @@ const ArtWorksList: React.FC = () => {
             if (isCurrentlyFavorite) {
                 removeFavoriteArtwork(artwork.id);
                 updatedFavorites.delete(artwork.id);
-                showToast('info', {text1: 'Eliminado de favoritos'});
+                showToast('info', {text1: 'Removed from favorites'});
             } else {
                 addFavoriteArtwork(artwork);
                 updatedFavorites.add(artwork.id);
-                showToast('success', {text1: 'Añadido a favoritos'});
+                showToast('success', {text1: 'Added to favorites'});
 
             }
             return updatedFavorites;
         });
-    }, []); // ¡Dependencias vacías! La función no cambia.
+    }, []);
 
     const renderArtworkItem = useCallback(({ item }: ListRenderItemInfo<ArtworkItemList>) => {
         return (
@@ -105,7 +105,7 @@ const ArtWorksList: React.FC = () => {
                 <ArtWorkItem onToggleFavorite={handleToggleFavorite} isFavorite={favoriteIds.has(item.id)} item={item} />
             </TouchableOpacity>
         );
-    }, [navigation, numColumns, handleToggleFavorite, favoriteIds]); // Dependencias importantes
+    }, [navigation, numColumns, handleToggleFavorite, favoriteIds]);
     
 
     useEffect(() => {
@@ -132,7 +132,7 @@ const ArtWorksList: React.FC = () => {
                     data={artWorks.filter(item => item.image_id !== null)} 
                     renderItem={renderArtworkItem}
                     ListEmptyComponent={
-                        <Text>No se encontraron obras de arte.</Text>
+                        <Text>No artworks found.</Text>
                     }
                     keyExtractor={(item) => item.id.toString()}
                     ListFooterComponent={

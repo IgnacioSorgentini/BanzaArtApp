@@ -10,21 +10,51 @@ import FavoriteArtWorks from './src/views/FavoriteArtworks';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './src/config/toastConfig';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useCallback, useEffect, useState } from 'react';
+
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
+      'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
+      'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
+    });
+    setFontsLoaded(true);
+  };
+
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <SafeAreaView style={styles.container} edges={['bottom']}>
+        <SafeAreaView style={styles.container} edges={['bottom']} onLayout={onLayoutRootView}>
           <StatusBar style="dark" />
           <Stack.Navigator>
             <Stack.Screen
               name='ArtWorksList'
               component={ArtWorksList}
               options={({ navigation }) => ({
-                title: 'Listado de Obras de Arte',
+                title: 'Artworks list',
                 headerRight: () => (
                   <TouchableOpacity
                   style={{ marginRight: 16 }}
@@ -38,7 +68,7 @@ export default function App() {
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {
-                  fontWeight: 'bold',
+                  fontFamily: 'Inter-Bold',
                 },
               })}
             />
@@ -46,13 +76,13 @@ export default function App() {
               name='ArtWorkDetails'
               component={ArtWorkDetails}
               options={{
-                title: 'Detalle de Obra',
+                title: 'Artwork details',
                 headerStyle: {
                   backgroundColor: '#b50938',
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {
-                  fontWeight: 'bold',
+                  fontFamily: 'Inter-Bold',
                 },
               }}
             />
@@ -60,13 +90,13 @@ export default function App() {
               name='FavoriteArtWorks'
               component={FavoriteArtWorks}
               options={{
-                title: 'Mis Favoritos',
+                title: 'My favorite artworks',
                 headerStyle: {
                   backgroundColor: '#b50938',
                 },
                 headerTintColor: '#fff',
                 headerTitleStyle: {
-                  fontWeight: 'bold',
+                  fontFamily: 'Inter-Bold',
                 },
               }}
             />

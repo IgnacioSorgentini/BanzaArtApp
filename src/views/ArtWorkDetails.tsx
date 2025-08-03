@@ -33,7 +33,7 @@ const ArtWorkDetails: React.FC = () => {
         }
         catch(err: any) {
             console.log(err);
-            showToast('error', { text1: 'Error cargando información de la obra' });
+            showToast('error', { text1: 'Error loading work information' });
         }
         finally {
             setIsLoading(false);
@@ -57,10 +57,10 @@ const ArtWorkDetails: React.FC = () => {
 
         if (isFavorite) {
             await removeFavoriteArtwork(id);
-            showToast('info', { text1: 'Eliminado de favoritos' });
+            showToast('info', { text1: 'Removed from favorites' });
         } else {
             await addFavoriteArtwork(artWorkItem);
-            showToast('success', { text1: 'Añadido a favoritos' });
+            showToast('success', { text1: 'Added to favorites' });
         }
         setIsFavorite(!isFavorite);
     };
@@ -201,12 +201,12 @@ const styles = StyleSheet.create({
     title: {
         color: '#b50938',
         fontSize: 30,
-        fontWeight: 'bold',
+        fontFamily: 'Inter-Bold',
     },
     subtitle: {
         color: '#b50938',
         fontSize: 25,
-        fontWeight: 'bold',
+        fontFamily: 'Inter-Medium',
     },
     detailsContainer: {
         flexDirection: 'column',
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     },
     textDetail: {
         color: '#FFF',
+        fontFamily: 'Inter-Regular',
     },
     characteristicContainer: {
         marginBottom: 10,
@@ -230,6 +231,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#b50938',
         fontSize: 14,
+        fontFamily: 'Inter-Regular',
     },
     divider: {
         height: 1,

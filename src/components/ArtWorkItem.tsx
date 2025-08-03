@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     },
     artWorkTitle: {
         color: '#ffffff',
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: 'Inter-Regular',
     },
     heartButton: {
         color: '#b50938',
