@@ -6,17 +6,17 @@ interface ShowToastOptions {
   text1: string;
   text2?: string;
   visibilityTime?: number;
-  topOffset?: number;
+  bottomOffset?: number;
 }
 
-export const showToast = (type: ToastType, { text1, text2, visibilityTime = 1500, topOffset = 10 }: ShowToastOptions) => {
+export const showToast = (type: ToastType, { text1, text2, visibilityTime = 1500, bottomOffset = 100 }: ShowToastOptions) => {
   Toast.show({
     type,
     text1,
     text2,
     visibilityTime,
-    topOffset,
-    position: 'top',
+    bottomOffset,
+    position: 'bottom',
     autoHide: true,
   });
 };
