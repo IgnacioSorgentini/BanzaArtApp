@@ -39,6 +39,7 @@ export interface Artwork {
   dimensions_detail: ArtworkDimension;
   medium_display: string;
   material_titles: Array<string>;
+  thumbnail: ArtworkThumbnail;
 }
 
 export interface ArtworkThumbnail {

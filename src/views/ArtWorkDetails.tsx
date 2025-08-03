@@ -4,7 +4,7 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { getArtworkById } from "../services/articService";
 import { Artwork } from "../types";
-import { GET_ARTIC_IMAGE_URL } from "../constants/api";
+import { GET_ARTIC_HIGH_IMAGE_URL } from "../constants/api";
 import { addFavoriteArtwork, isArtworkFavorite, removeFavoriteArtwork } from "../services/favoritesService";
 import Ionicons from '@expo/vector-icons/Ionicons';
 interface ArtWorkDetailsProps {
@@ -13,8 +13,9 @@ interface ArtWorkDetailsProps {
 
 const ArtWorkDetails: React.FC = () => {
     const [artWorkInformation, setArtWorkInformation] = useState<Artwork>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
+    const [mainImageLoaded, setMainImageLoaded] = useState<boolean>(false);
 
     type ArtWorkDetailsRouteProp = RouteProp<RootStackParamList, 'ArtWorkDetails'>;
 
@@ -91,9 +92,18 @@ const ArtWorkDetails: React.FC = () => {
                                 </Text>
                             </View>
                             <View style={styles.imageContainer}>
+                                {artWorkInformation.thumbnail?.lqip && (
+                                    <Image
+                                        source={{ uri: artWorkInformation.thumbnail.lqip }}
+                                        style={[styles.backgroundImage, { opacity: mainImageLoaded ? 0 : 1 }]}
+                                        resizeMode="cover"
+                                    />
+                                )}
                                 <Image 
-                                    source={{ uri:GET_ARTIC_IMAGE_URL(artWorkInformation.image_id) }}
-                                    style={{ width: '100%', height: 300, resizeMode: 'cover', borderRadius: 20 }}
+                                    source={{ uri:GET_ARTIC_HIGH_IMAGE_URL(artWorkInformation.image_id) }}
+                                    style={[styles.backgroundImage, { opacity: mainImageLoaded ? 1 : 0 }]}
+                                    resizeMode="cover"
+                                    onLoad={() => setMainImageLoaded(true)}
                                 />
                             </View>
                             {artWorkInformation.description && (
@@ -151,6 +161,12 @@ const styles = StyleSheet.create({
     imageContainer: {
         borderRadius: 20,
         width: '100%',
+        position: 'relative',
+        height: 300,
+    },
+    backgroundImage: {
+        ...StyleSheet.absoluteFillObject,
+        borderRadius: 20,
     },
     subtitleContainer: {
         marginTop: 20,

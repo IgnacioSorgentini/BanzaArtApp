@@ -1,9 +1,8 @@
 import React, { memo, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { ArtworkItemList } from "../types";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ImageBackground } from "react-native";
-import { GET_ARTIC_IMAGE_URL } from "../constants/api";
+import { GET_ARTIC_LOW_IMAGE_URL } from "../constants/api";
 
 
 interface ArtWorkItemProps {
@@ -13,26 +12,32 @@ interface ArtWorkItemProps {
 }
 
 const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFavorite }) => {
-    const [loaded, setLoaded] = useState(false);
-    const [imageError, setImageError] = useState(false);
+    const [mainImageLoaded, setMainImageLoaded] = useState(false);
 
-    const imageUrl = GET_ARTIC_IMAGE_URL(item.image_id);
-
-   const imageSource =
-    imageError ? { uri: item.thumbnail?.lqip } : { uri: imageUrl };
+    const thumbnailUrl = item.thumbnail?.lqip;
+    const imageUrl = GET_ARTIC_LOW_IMAGE_URL(item.image_id);
 
     const handleToggleFavorite = async () => {
-        onToggleFavorite(item); // Notifica al componente padre
+        onToggleFavorite(item);
     };
 
     return (
-        <ImageBackground 
-            source={imageSource}
-            imageStyle={{ borderRadius: 10 }}
-            style={styles.container}
-            onLoadEnd={() => setLoaded(true)}
-            onError={() => setImageError(true)}
-        >
+       <View style={styles.container}>
+            <Image
+                source={{ uri: thumbnailUrl }}
+                style={[styles.backgroundImage, { opacity: mainImageLoaded ? 0 : 1 }]}
+                resizeMode="cover"
+            />
+            
+            {imageUrl && (
+              <Image
+                  source={{ uri: imageUrl }}
+                  style={[styles.backgroundImage, { opacity: mainImageLoaded ? 1 : 0 }]}
+                  resizeMode="cover"
+                  onLoad={() => setMainImageLoaded(true)}
+              />
+            )}
+
             <View style={styles.favoriteIconContainer}>
                 <TouchableOpacity onPress={handleToggleFavorite}>
                     <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={25} style={styles.heartButton} />
@@ -41,7 +46,7 @@ const ArtWorkItem: React.FC<ArtWorkItemProps> = ({ item, onToggleFavorite, isFav
             <View style={styles.titleContainer}>
                 <Text style={styles.artWorkTitle}>{item.title}</Text>
             </View>
-        </ImageBackground>
+        </View>
     );
 };
 
@@ -52,7 +57,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         marginBottom: 20,
+        overflow: 'hidden',
         position: 'relative',
+    },
+    backgroundImage: {
+        ...StyleSheet.absoluteFillObject,
+        borderRadius: 10,
     },
     titleContainer: {
         position: 'absolute',
