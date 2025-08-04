@@ -7,9 +7,6 @@ An art gallery mobile application built with **React Native**, **Expo**, and **T
   * **Browse Artworks**: Seamlessly browse a paginated list of artworks from the [Art Institute of Chicago API](https://api.artic.edu/docs).
   * **Artwork Details**: Tap on any piece to view a detailed page with information about the artist, materials, dimensions, and a high-resolution image.
   * **Favorites System**: Add and remove artworks from your favorites list, which is saved locally on your device.
-  * **Responsive UI**: The app layout adapts to different screen sizes, displaying a single column on mobile devices and a two-column grid on tablets.
-  * **Progressive Image Loading**: Images load with a low-quality placeholder first, providing a smooth user experience.
-  * **Clean Architecture**: The project follows a modular structure with clear separation of concerns using services, components, and type definitions.
 
 ## 💻 Technologies
 
@@ -64,15 +61,3 @@ Make sure you have the following installed:
       * **On a physical device:** Scan the QR code displayed in the terminal with your phone's camera.
       * **On an iOS emulator:** Press `i` in the terminal.
       * **On an Android emulator:** Press `a` in the terminal.
-
-## 🎨 Screenshots
-
-*Add some screenshots or a GIF here to showcase your app's main screens (list, details, favorites). This makes the project much more appealing\!*
-
-## 🤝 Contributing
-
-Contributions are welcome\! If you find a bug or have a suggestion for a new feature, please open an issue or submit a pull request.
-
-## 📄 License
-
-This project is licensed under the MIT License.
