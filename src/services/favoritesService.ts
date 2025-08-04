@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArtworkItemList } from '../types';
 
-const FAVORITES_KEY = '@MyApp:favorites';
+const FAVORITES_KEY = 'favorites';
 
 export const getFavoriteArtworks = async (): Promise<ArtworkItemList[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(FAVORITES_KEY);
     return jsonValue != null ? JSON.parse(jsonValue) : [];
   } catch (e) {
-    console.error("Error al cargar favoritos:", e);
+    console.error("Error loading favorites:", e);
     return [];
   }
 };
@@ -18,7 +18,7 @@ export const saveFavoriteArtworks = async (favorites: ArtworkItemList[]) => {
     const jsonValue = JSON.stringify(favorites);
     await AsyncStorage.setItem(FAVORITES_KEY, jsonValue);
   } catch (e) {
-    console.error("Error al guardar favoritos:", e);
+    console.error("Error saving favorites:", e);
   }
 };
 

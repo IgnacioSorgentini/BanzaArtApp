@@ -49,7 +49,17 @@ export default function App() {
       <NavigationContainer>
         <SafeAreaView style={styles.container} edges={['bottom']} onLayout={onLayoutRootView}>
           <StatusBar style="dark" />
-          <Stack.Navigator>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: '#b50938',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontFamily: 'Inter-Bold',
+              },
+            }}
+          >
             <Stack.Screen
               name='ArtWorksList'
               component={ArtWorksList}
@@ -63,13 +73,6 @@ export default function App() {
                     <Ionicons name="heart" size={24} color="#fff" />
                   </TouchableOpacity>
                 ),
-                headerStyle: {
-                  backgroundColor: '#b50938',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontFamily: 'Inter-Bold',
-                },
               })}
             />
             <Stack.Screen
@@ -77,13 +80,6 @@ export default function App() {
               component={ArtWorkDetails}
               options={{
                 title: 'Artwork details',
-                headerStyle: {
-                  backgroundColor: '#b50938',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontFamily: 'Inter-Bold',
-                },
               }}
             />
             <Stack.Screen
@@ -91,13 +87,6 @@ export default function App() {
               component={FavoriteArtWorks}
               options={{
                 title: 'My favorite artworks',
-                headerStyle: {
-                  backgroundColor: '#b50938',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontFamily: 'Inter-Bold',
-                },
               }}
             />
           </Stack.Navigator>

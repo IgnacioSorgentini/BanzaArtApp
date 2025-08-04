@@ -28,18 +28,14 @@ export interface ArtworkItemList {
   thumbnail?: ArtworkThumbnail;
 }
 
-export interface Artwork {
-  id: number;
-  title: string;
+export interface Artwork extends ArtworkItemList {
   description: string;
-  image_id: string;
   artist_title: string;
   place_of_origin: string;
   dimensions: string;
   dimensions_detail: ArtworkDimension;
   medium_display: string;
   material_titles: Array<string>;
-  thumbnail: ArtworkThumbnail;
 }
 
 export interface ArtworkThumbnail {

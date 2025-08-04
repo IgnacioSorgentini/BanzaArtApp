@@ -1,13 +1,14 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, FlatList, StyleSheet, useWindowDimensions, ListRenderItemInfo } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet, useWindowDimensions, ListRenderItemInfo } from "react-native";
 import { getArtworksList } from "../services/articService";
 import { ArtworkItemList, RootStackParamList } from "../types";
 import ArtWorkItem from "../components/ArtWorkItem";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { isArtworkFavorite, addFavoriteArtwork, getFavoriteArtworks, removeFavoriteArtwork } from "../services/favoritesService";
+import { addFavoriteArtwork, getFavoriteArtworks, removeFavoriteArtwork } from "../services/favoritesService";
 import { showToast } from "../utils/showToast";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 const ArtWorksList: React.FC = () => {
     const [artWorks, setArtWorks] = useState<ArtworkItemList[]>([]);
@@ -67,8 +68,6 @@ const ArtWorksList: React.FC = () => {
     };
 
     const handleLoadMore = useCallback(async () => {
-        // Si la lista aún no tiene elementos, la carga inicial ya se está manejando.
-        // Evitamos el bucle infinito que se dispara al principio.
         if (artWorks.length === 0) {
         return;
         }
@@ -121,9 +120,7 @@ const ArtWorksList: React.FC = () => {
     return (
         <View style={styles.listContainer}>
             {isLoading ? (
-                <View style={styles.loaderContainer}>
-                    <ActivityIndicator size="large" color="#b50938" />
-                </View>
+                <LoadingIndicator />     
             ) : (
                 <FlatList 
                     style={styles.list}
@@ -137,9 +134,7 @@ const ArtWorksList: React.FC = () => {
                     keyExtractor={(item) => item.id.toString()}
                     ListFooterComponent={
                         isLoadingMore ? (
-                            <View style={styles.loaderContainer}>
-                                <ActivityIndicator size="small" color="#b50938" />
-                            </View>
+                            <LoadingIndicator />
                         ) : null
                     }
                     onEndReached={handleLoadMore}

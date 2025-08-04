@@ -1,4 +1,3 @@
-// src/views/FavoriteArtWorks.tsx
 import React, { useState, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -8,6 +7,7 @@ import { getFavoriteArtworks, removeFavoriteArtwork, addFavoriteArtwork } from '
 import ArtWorkItem from '../components/ArtWorkItem';
 import { TouchableOpacity } from 'react-native';
 import { showToast } from '../utils/showToast';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 const FavoriteArtWorks: React.FC = () => {
   const [favorites, setFavorites] = useState<ArtworkItemList[]>([]);
@@ -40,14 +40,12 @@ const FavoriteArtWorks: React.FC = () => {
       setFavorites(updatedFavorites);
       showToast('info', { text1: 'Removed from favorites' });
     } else {
-      // Aunque esta pantalla es de favoritos, permitimos añadir si por alguna razón se llega aquí un item no favorito
       const updatedFavorites = await addFavoriteArtwork(artwork);
       setFavorites(updatedFavorites);
       showToast('success', { text1: 'Added to favorites' });
     }
   };
 
-  // Cargar favoritos cada vez que la pantalla se enfoca
   useFocusEffect(
     useCallback(() => {
       loadFavorites();
@@ -56,9 +54,7 @@ const FavoriteArtWorks: React.FC = () => {
 
   if (isLoading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#b50938" />
-      </View>
+      <LoadingIndicator />
     );
   }
 
@@ -116,8 +112,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   itemContainer: {
-        flex: 0.50,
-        margin: 4,
+    flex: 0.50,
+    margin: 4,
   },
 });
 

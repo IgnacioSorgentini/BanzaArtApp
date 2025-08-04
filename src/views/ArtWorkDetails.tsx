@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { getArtworkById } from "../services/articService";
@@ -8,9 +8,7 @@ import { GET_ARTIC_HIGH_IMAGE_URL } from "../constants/api";
 import { addFavoriteArtwork, isArtworkFavorite, removeFavoriteArtwork } from "../services/favoritesService";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { showToast } from "../utils/showToast";
-interface ArtWorkDetailsProps {
-    artWorkId: string;
-};
+import LoadingIndicator from "../components/LoadingIndicator";
 
 const ArtWorkDetails: React.FC = () => {
     const [artWorkInformation, setArtWorkInformation] = useState<Artwork>();
@@ -71,104 +69,104 @@ const ArtWorkDetails: React.FC = () => {
     }, [id]);
 
     return(
-        <ScrollView>
             <View>
                 {isLoading ? (
-                    <ActivityIndicator size="large" />
+                  <LoadingIndicator /> 
                 ) : (
                     artWorkInformation && (
-                        <View style={styles.container}>
-                            <View style={styles.titleContainer}>
-                                <View style={{ maxWidth: '80%' }}>
-                                    <Text style={styles.title}>
-                                        {artWorkInformation?.title.split(/[.,(]/)[0].trim()}
-                                    </Text>
-                                </View>
-                                <View>
-                                    <TouchableOpacity onPress={handleToggleFavorite}>
-                                        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={30} style={styles.heartButton} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.divider} />
-                            <View style={styles.detailsContainer}>
-                                <View style={styles.detail}>
-                                    <Text style={styles.textDetail}>
-                                        Artist: {artWorkInformation.artist_title}
-                                    </Text>
-                                </View>
-                                <View style={styles.detail}>
-                                    <Text style={styles.textDetail}>
-                                        Place of origin: {artWorkInformation.place_of_origin}
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={styles.imageContainer}>
-                                {artWorkInformation.thumbnail?.lqip && (
-                                    <Image
-                                        source={{ uri: artWorkInformation.thumbnail.lqip }}
-                                        style={[styles.backgroundImage, { opacity: mainImageLoaded ? 0 : 1 }]}
-                                        resizeMode="cover"
-                                    />
-                                )}
-                                <Image 
-                                    source={{ uri:GET_ARTIC_HIGH_IMAGE_URL(artWorkInformation.image_id) }}
-                                    style={[styles.backgroundImage, { opacity: mainImageLoaded ? 1 : 0 }]}
-                                    resizeMode="cover"
-                                    onLoad={() => setMainImageLoaded(true)}
-                                />
-                            </View>
-                            {artWorkInformation.description && (
-                               <View>
-                                    <View style={styles.subtitleContainer}>
-                                        <Text style={styles.subtitle}>
-                                            Description
+                        <ScrollView>
+                            <View style={styles.container}>
+                                <View style={styles.titleContainer}>
+                                    <View style={{ maxWidth: '80%' }}>
+                                        <Text style={styles.title}>
+                                            {artWorkInformation.title.split(/[.,(]/)[0].trim()}
                                         </Text>
                                     </View>
-                                    <View style={styles.divider} />
                                     <View>
-                                        <Text style={styles.text}>
-                                                {(artWorkInformation.description || '').replace(/<[^>]+>/g, '')}
+                                        <TouchableOpacity onPress={handleToggleFavorite}>
+                                            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={30} style={styles.heartButton} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.divider} />
+                                <View style={styles.detailsContainer}>
+                                    <View style={styles.detail}>
+                                        <Text style={styles.textDetail}>
+                                            Artist: {artWorkInformation.artist_title}
                                         </Text>
                                     </View>
-                               </View>
-                            )}
-                            {(artWorkInformation.material_titles || artWorkInformation.medium_display || artWorkInformation.dimensions) && (
-                                <>
-                                    <View style={styles.subtitleContainer}>
-                                        <Text style={styles.subtitle}>
-                                            Characteristics
+                                    <View style={styles.detail}>
+                                        <Text style={styles.textDetail}>
+                                            Place of origin: {artWorkInformation.place_of_origin}
                                         </Text>
                                     </View>
-                                    <View style={styles.divider} />
-                                    {artWorkInformation.medium_display && (
-                                        <View style={styles.characteristicContainer}>
-                                            <Text style={styles.text}>
-                                                Tehnique: {artWorkInformation.medium_display}
+                                </View>
+                                <View style={styles.imageContainer}>
+                                    {artWorkInformation.thumbnail?.lqip && (
+                                        <Image
+                                            source={{ uri: artWorkInformation.thumbnail.lqip }}
+                                            style={[styles.backgroundImage, { opacity: mainImageLoaded ? 0 : 1 }]}
+                                            resizeMode="cover"
+                                        />
+                                    )}
+                                    <Image 
+                                        source={{ uri:GET_ARTIC_HIGH_IMAGE_URL(artWorkInformation.image_id) }}
+                                        style={[styles.backgroundImage, { opacity: mainImageLoaded ? 1 : 0 }]}
+                                        resizeMode="cover"
+                                        onLoad={() => setMainImageLoaded(true)}
+                                    />
+                                </View>
+                                {artWorkInformation.description && (
+                                <View>
+                                        <View style={styles.subtitleContainer}>
+                                            <Text style={styles.subtitle}>
+                                                Description
                                             </Text>
                                         </View>
-                                    )}
-                                    {artWorkInformation.material_titles.length > 0 && (
-                                        <View style={styles.characteristicContainer}>
+                                        <View style={styles.divider} />
+                                        <View>
                                             <Text style={styles.text}>
-                                                Materials: {artWorkInformation.material_titles.join(', ')}
+                                                    {(artWorkInformation.description || '').replace(/<[^>]+>/g, '')}
                                             </Text>
                                         </View>
-                                    )}
-                                    {artWorkInformation.dimensions && (
-                                        <View style={styles.characteristicContainer}>
-                                            <Text style={styles.text}>
-                                                Dimensions: {artWorkInformation.dimensions ?? '-'}
+                                </View>
+                                )}
+                                {(artWorkInformation.material_titles || artWorkInformation.medium_display || artWorkInformation.dimensions) && (
+                                    <>
+                                        <View style={styles.subtitleContainer}>
+                                            <Text style={styles.subtitle}>
+                                                Characteristics
                                             </Text>
                                         </View>
-                                    )}
-                                </>
-                            )}
-                        </View>
+                                        <View style={styles.divider} />
+                                        {artWorkInformation.medium_display && (
+                                            <View style={styles.characteristicContainer}>
+                                                <Text style={styles.text}>
+                                                    Tehnique: {artWorkInformation.medium_display}
+                                                </Text>
+                                            </View>
+                                        )}
+                                        {artWorkInformation.material_titles.length > 0 && (
+                                            <View style={styles.characteristicContainer}>
+                                                <Text style={styles.text}>
+                                                    Materials: {artWorkInformation.material_titles.join(', ')}
+                                                </Text>
+                                            </View>
+                                        )}
+                                        {artWorkInformation.dimensions && (
+                                            <View style={styles.characteristicContainer}>
+                                                <Text style={styles.text}>
+                                                    Dimensions: {artWorkInformation.dimensions ?? '-'}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </>
+                                )}
+                            </View>
+                        </ScrollView>
                     )
                 )}
             </View>
-        </ScrollView>
     );
 };
 
